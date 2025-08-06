@@ -1,0 +1,3112 @@
+<!DOCTYPE html>
+<html lang="ug">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>رەڭدار ماتېماتىكا</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6a5acd;
+            --secondary: #9370db;
+            --accent: #ff8c00;
+            --correct: #4caf50;
+            --incorrect: #f44336;
+            --text-light: #ffffff;
+            --text-dark: #333333;
+            --bg-gradient: linear-gradient(135deg, #6a5acd 0%, #9370db 50%, #87ceeb 100%);
+            --time-warning: #ff5722;
+            --time-critical: #f44336;
+            --dark-primary: #4b3d8f;
+            --dark-secondary: #6a4fbb;
+            --dark-bg: #121212;
+            --dark-card: #1e1e1e;
+            --dark-text: #e0e0e0;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            background: var(--bg-gradient);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            font-family: 'Comic Neue', cursive;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            color: var(--text-light);
+            touch-action: manipulation;
+            direction: rtl;
+            transition: background 0.5s ease, color 0.5s ease;
+        }
+        
+        body.dark-mode {
+            background: var(--dark-bg);
+            color: var(--dark-text);
+        }
+        
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+        
+        body.dark-mode .container {
+            background: var(--dark-card);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        h1, h2, h3 {
+            font-family: 'Fredoka One', cursive;
+            color: var(--primary);
+            text-align: center;
+            margin: 0 auto 20px auto;
+            font-size: 1.8rem;
+            text-shadow: 3px 3px 0 rgba(0,0,0,0.1);
+            position: relative;
+            display: block;
+            width: 100%;
+            transition: color 0.3s;
+        }
+        
+        body.dark-mode h1,
+        body.dark-mode h2,
+        body.dark-mode h3 {
+            color: var(--secondary);
+        }
+        
+        h1::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+        
+        /* 主题切换按钮 */
+        .theme-toggle {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary);
+            z-index: 100;
+        }
+        
+        body.dark-mode .theme-toggle {
+            color: var(--accent);
+        }
+        
+        /* 音效控制按钮 */
+        .sound-toggle {
+            position: absolute;
+            top: 15px;
+            right: 70px;
+            background: transparent;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: var(--primary);
+            z-index: 100;
+        }
+        
+        body.dark-mode .sound-toggle {
+            color: var(--accent);
+        }
+        
+        /* 用户界面 */
+        .user-section {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 100;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .user-avatar:hover {
+            transform: scale(1.1);
+        }
+        
+        .user-menu {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: black;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            padding: 10px;
+            width: 200px;
+            display: none;
+            z-index: 101;
+        }
+        
+        body.dark-mode .user-menu {
+            background: var(--dark-card);
+        }
+        
+        .user-menu.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+        
+        .user-menu-item {
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .user-menu-item:hover {
+            background: rgba(106, 90, 205, 0.1);
+        }
+        
+        body.dark-mode .user-menu-item:hover {
+            background: rgba(147, 112, 219, 0.2);
+        }
+        
+        /* 登录/注册表单 */
+        .auth-form {
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+            margin: 20px auto;
+        }
+        
+        body.dark-mode .auth-form {
+            background: var(--dark-card);
+        }
+        
+        .auth-form.active {
+            display: flex;
+        }
+        
+        .auth-form input {
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: 'Comic Neue', cursive;
+            transition: border 0.3s;
+        }
+        
+        .auth-form input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        
+        body.dark-mode .auth-form input {
+            background: #2d2d2d;
+            border-color: #444;
+            color: var(--dark-text);
+        }
+        
+        .auth-form button {
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Fredoka One', cursive;
+        }
+        
+        .auth-form button:hover {
+            background: var(--secondary);
+        }
+        
+        .auth-switch {
+            text-align: center;
+            color: var(--primary);
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        body.dark-mode .auth-switch {
+            color: var(--accent);
+        }
+        
+        /* 模式选择 */
+        .mode-selection {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .mode-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            font-family: 'Fredoka One', cursive;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        body.dark-mode .mode-btn {
+            background: var(--dark-primary);
+        }
+        
+        .mode-btn span {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+        
+        .mode-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--secondary);
+            z-index: -1;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+        
+        body.dark-mode .mode-btn::before {
+            background: var(--dark-secondary);
+        }
+        
+        .mode-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        
+        .mode-btn:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .mode-btn:active {
+            transform: translateY(1px);
+        }
+        
+        /* 模式描述提示 */
+        .mode-description {
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .mode-btn:hover .mode-description {
+            opacity: 1;
+        }
+        
+        /* 级别选择 */
+        .level-selection {
+            display: none;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .level-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Fredoka One', cursive;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        body.dark-mode .level-btn {
+            background: var(--dark-secondary);
+        }
+        
+        .level-btn span {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+        
+        .level-btn:hover {
+            background: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+        }
+        
+        body.dark-mode .level-btn:hover {
+            background: var(--dark-primary);
+        }
+        
+        /* 游戏设置 */
+        .game-settings {
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+            background: rgba(255,255,255,0.8);
+            padding: 15px;
+            border-radius: 15px;
+        }
+        
+        body.dark-mode .game-settings {
+            background: rgba(30, 30, 30, 0.8);
+        }
+        
+        .setting-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .setting-label {
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+        
+        body.dark-mode .setting-label {
+            color: var(--accent);
+        }
+        
+        .setting-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .setting-option {
+            padding: 8px 12px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        body.dark-mode .setting-option {
+            background: #333;
+        }
+        
+        .setting-option.selected {
+            background: var(--primary);
+            color: white;
+        }
+        
+        body.dark-mode .setting-option.selected {
+            background: var(--accent);
+        }
+        
+        /* 游戏容器 */
+        .quiz-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        /* 统计信息 */
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        
+        .stat-box {
+            background: white;
+            padding: 8px 12px;
+            border-radius: 10px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            text-align: center;
+            min-width: 70px;
+            flex: 1;
+            margin: 0 5px;
+            transition: background 0.3s;
+        }
+        
+        body.dark-mode .stat-box {
+            background: #2d2d2d;
+        }
+        
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--text-dark);
+            opacity: 0.7;
+            transition: color 0.3s;
+        }
+        
+        body.dark-mode .stat-label {
+            color: var(--dark-text);
+        }
+        
+        .stat-value {
+            font-size: 1rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-top: 3px;
+            transition: color 0.3s;
+        }
+        
+        body.dark-mode .stat-value {
+            color: var(--accent);
+        }
+        
+        .timer-value {
+            color: var(--time-warning);
+        }
+        
+        .timer-value.critical {
+            color: var(--time-critical);
+            animation: pulse 0.5s infinite alternate;
+        }
+        
+        /* 问题容器 */
+        .question-container {
+            position: relative;
+            width: 100%;
+            margin: 15px 0;
+        }
+        
+        .question {
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            color: var(--text-dark);
+            position: relative;
+            z-index: 1;
+            font-family: 'Fredoka One', cursive;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            direction: ltr;
+            transition: background 0.3s, color 0.3s;
+        }
+        
+        body.dark-mode .question {
+            background: #2d2d2d;
+            color: var(--dark-text);
+        }
+        
+        .question::before {
+            content: "";
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            z-index: -1;
+            border-radius: 18px;
+            opacity: 0.7;
+            filter: blur(10px);
+        }
+        
+        /* 选项 - 修改为两行两列布局 */
+        .options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 10px;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        
+        .option-btn {
+            padding: 15px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            color: var(--text-dark);
+            font-family: 'Fredoka One', cursive;
+            position: relative;
+            overflow: hidden;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            direction: ltr;
+        }
+        
+        body.dark-mode .option-btn {
+            background: #2d2d2d;
+            color: var(--dark-text);
+        }
+        
+        .option-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(106, 90, 205, 0.1);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+        
+        body.dark-mode .option-btn::before {
+            background: rgba(147, 112, 219, 0.2);
+        }
+        
+        .option-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        
+        .option-btn:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .option-btn.correct {
+            background: var(--correct);
+            color: white;
+            animation: pulse 0.5s;
+        }
+        
+        .option-btn.incorrect {
+            background: var(--incorrect);
+            color: white;
+            animation: shake 0.5s;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+        
+        /* 反馈 */
+        .feedback {
+            font-size: 1.2rem;
+            margin: 10px 0;
+            min-height: 30px;
+            text-align: center;
+            font-weight: bold;
+            animation: fadeIn 0.3s;
+            padding: 8px 15px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.8);
+            color: var(--text-dark);
+            transition: background 0.3s, color 0.3s;
+        }
+        
+        body.dark-mode .feedback {
+            background: rgba(45, 45, 45, 0.8);
+            color: var(--dark-text);
+        }
+        
+        .feedback.correct {
+            color: var(--correct);
+            background: rgba(76, 175, 80, 0.2);
+        }
+        
+        .feedback.incorrect {
+            color: var(--incorrect);
+            background: rgba(244, 67, 54, 0.2);
+        }
+        
+        /* 连击计数器 */
+        .streak-counter {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: var(--accent);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            animation: popIn 0.3s;
+            z-index: 10;
+        }
+        
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            80% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        /* 控制按钮 */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 15px;
+        }
+        
+        .control-btn {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Fredoka One', cursive;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+        }
+        
+        .next-btn {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .next-btn:hover {
+            background: #ff7700;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+        }
+        
+        .back-btn {
+            background: #a9a9a9;
+            color: white;
+        }
+        
+        .back-btn:hover {
+            background: #808080;
+            transform: translateY(-2px);
+        }
+        
+        /* 结果容器 */
+        .result-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            animation: fadeIn 0.5s;
+        }
+        
+        .result-title {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-family: 'Fredoka One', cursive;
+        }
+        
+        body.dark-mode .result-title {
+            color: var(--accent);
+        }
+        
+        .result-box {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            transition: background 0.3s;
+        }
+        
+        body.dark-mode .result-box {
+            background: #2d2d2d;
+        }
+        
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+        
+        .result-label {
+            font-weight: bold;
+            color: var(--text-dark);
+            transition: color 0.3s;
+        }
+        
+        body.dark-mode .result-label {
+            color: var(--dark-text);
+        }
+        
+        .result-value {
+            font-weight: bold;
+            color: var(--primary);
+            transition: color 0.3s;
+        }
+        
+        body.dark-mode .result-value {
+            color: var(--accent);
+        }
+        
+        .result-message {
+            font-size: 1.1rem;
+            margin: 15px 0;
+            font-weight: bold;
+            color: var(--accent);
+        }
+        
+        .player-name {
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        
+        body.dark-mode .player-name {
+            color: var(--accent);
+        }
+        
+        /* 彩色纸屑效果 */
+        .confetti {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: confettiFall 5s linear forwards;
+        }
+        
+        @keyframes confettiFall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(1000px) rotate(360deg); opacity: 0; }
+        }
+        
+        /* 重新开始按钮 */
+        .restart-btn {
+            padding: 12px 25px;
+            font-size: 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Fredoka One', cursive;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        body.dark-mode .restart-btn {
+            background: var(--dark-primary);
+        }
+        
+        .restart-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--secondary);
+            z-index: -1;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+        
+        body.dark-mode .restart-btn::before {
+            background: var(--dark-secondary);
+        }
+        
+        .restart-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+        }
+        
+        .restart-btn:hover::before {
+            transform: scaleX(1);
+        }
+        
+        /* 返回主页按钮统一样式 */
+        .back-to-main-btn {
+            margin-top: 20px;
+            width: 100%;
+        }
+        
+        /* 时间条 */
+        .time-bar {
+            height: 5px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        
+        body.dark-mode .time-bar {
+            background: #444;
+        }
+        
+        .time-progress {
+            height: 100%;
+            background: var(--primary);
+            width: 100%;
+            transition: width 0.5s linear, background 0.3s;
+        }
+        
+        .time-progress.warning {
+            background: var(--time-warning);
+        }
+        
+        .time-progress.critical {
+            background: var(--time-critical);
+        }
+        
+        /* 特殊动画效果 */
+        .bounce {
+            animation: bounce 0.5s;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .heartbeat {
+            animation: heartbeat 0.5s;
+        }
+        
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        /* 用户资料 */
+        .profile-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            animation: fadeIn 0.5s;
+        }
+        
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: balck;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .profile-name {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-family: 'Fredoka One', cursive;
+        }
+        
+        .profile-stats {
+            width: 100%;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        body.dark-mode .profile-stats {
+            background: #2d2d2d;
+        }
+        
+        .profile-stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+        
+        .profile-stat-label {
+            font-weight: bold;
+            color: var(--text-dark);
+        }
+        
+        body.dark-mode .profile-stat-label {
+            color: var(--dark-text);
+        }
+        
+        .profile-stat-value {
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        body.dark-mode .profile-stat-value {
+            color: var(--accent);
+        }
+        
+        /* 错题本 */
+        .wrong-answers-container {
+            display: none;
+            flex-direction: column;
+            width: 100%;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        body.dark-mode .wrong-answers-container {
+            background: #2d2d2d;
+        }
+        
+        .wrong-answer-item {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        body.dark-mode .wrong-answer-item {
+            border-bottom-color: #444;
+        }
+        
+        .wrong-question {
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        body.dark-mode .wrong-question {
+            color: var(--accent);
+        }
+        
+        .wrong-user-answer {
+            color: var(--incorrect);
+        }
+        
+        .wrong-correct-answer {
+            color: var(--correct);
+        }
+        
+        /* 排行榜 */
+        .leaderboard-container {
+            display: none;
+            flex-direction: column;
+            width: 100%;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        body.dark-mode .leaderboard-container {
+            background: #2d2d2d;
+        }
+        
+        .leaderboard-header {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            font-weight: bold;
+            border-bottom: 2px solid var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        body.dark-mode .leaderboard-item {
+            border-bottom-color: #444;
+        }
+        
+        .leaderboard-position {
+            font-weight: bold;
+            color: var(--primary);
+            width: 30px;
+        }
+        
+        .leaderboard-name {
+            flex: 1;
+            text-align: right;
+            padding-right: 15px;
+        }
+        
+        .leaderboard-score {
+            font-weight: bold;
+            width: 60px;
+            text-align: left;
+        }
+        
+        /* 成就系统 */
+        .achievements-container {
+            display: none;
+            flex-direction: column;
+            width: 100%;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        body.dark-mode .achievements-container {
+            background: #2d2d2d;
+        }
+        
+        .achievement-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        body.dark-mode .achievement-item {
+            border-bottom-color: #444;
+        }
+        
+        .achievement-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .achievement-info {
+            flex: 1;
+        }
+        
+        .achievement-title {
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .achievement-desc {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        body.dark-mode .achievement-desc {
+            color: #aaa;
+        }
+        
+        .achievement-locked {
+            opacity: 0.5;
+        }
+        
+        .achievement-locked .achievement-icon {
+            background: #ccc;
+        }
+        
+        .achievement-locked .achievement-title {
+            color: #666;
+        }
+        
+        /* 分享按钮 */
+        .share-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .share-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .share-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .share-btn.facebook {
+            background: #3b5998;
+        }
+        
+        .share-btn.twitter {
+            background: #1da1f2;
+        }
+        
+        .share-btn.whatsapp {
+            background: #25d366;
+        }
+        
+        /* 加载动画 */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 教程提示 */
+        .tutorial-tip {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            z-index: 100;
+            animation: bounce 2s infinite;
+        }
+        
+        /* 公司名称 */
+        .company-name {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--primary);
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        
+        body.dark-mode .company-name {
+            color: var(--accent);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 480px) {
+            .mode-selection {
+                grid-template-columns: 1fr;
+            }
+            
+            .level-selection {
+                grid-template-columns: 1fr;
+            }
+            
+            .options {
+                grid-template-columns: 1fr;
+                grid-template-rows: repeat(4, 1fr);
+            }
+            
+            .option-btn {
+                height: 60px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .question {
+                font-size: 1.5rem;
+                min-height: 80px;
+            }
+            
+            .sound-toggle {
+                right: 60px;
+                font-size: 1rem;
+            }
+            
+            .user-avatar {
+                width: 35px;
+                height: 35px;
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .mode-btn, .level-btn {
+                padding: 8px;
+                font-size: 0.9rem;
+            }
+            
+            .question {
+                font-size: 1.3rem;
+                min-height: 70px;
+                padding: 10px;
+            }
+            
+            .option-btn {
+                height: 50px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 主题切换按钮 -->
+        <button class="theme-toggle" id="themeToggle">
+            <i class="fas fa-moon"></i>
+        </button>
+        
+        <!-- 音效控制按钮 -->
+        <button class="sound-toggle" id="soundToggle">
+            <i class="fas fa-volume-up"></i>
+        </button>
+        
+        <!-- 用户区域 -->
+        <div class="user-section">
+            <div class="user-avatar" id="userAvatar">?</div>
+            <div class="user-menu" id="userMenu">
+                <div class="user-menu-item" id="profileBtn">شەخسىي مەلۇماتلار</div>
+                <div class="user-menu-item" id="wrongAnswersBtn">خاتالىق تىزىملىكى</div>
+                <div class="user-menu-item" id="leaderboardBtn">رەتلىك جەدىۋىلى</div>
+                <div class="user-menu-item" id="achievementsBtn">ئېرىشكەن نەتىجىلەر</div>
+                <div class="user-menu-item" id="logoutBtn">چىقىش</div>
+            </div>
+        </div>
+        
+        <!-- 登录/注册表单 -->
+        <div class="auth-form" id="loginForm">
+            <h3>تىزىملىتىش</h3>
+            <input type="text" id="loginUsername" placeholder="ئىشلەتكۇچى نامى">
+            <input type="password" id="loginPassword" placeholder="مەخپى نۇمۇر">
+            <button id="loginBtn">تىزىملىتىش</button>
+            <div class="auth-switch" id="showRegister">يېڭى ئەزا بولۇش</div>
+            <div class="company-name">ALFDroid Company@</div>
+        </div>
+        
+        <div class="auth-form" id="registerForm">
+            <h3>يېڭى ئەزا بولۇش</h3>
+            <input type="text" id="registerUsername" placeholder="ئىشلەتكۇچى نامى">
+            <input type="password" id="registerPassword" placeholder="مەخپى نۇمۇر">
+            <input type="password" id="registerConfirmPassword" placeholder="مەخپى نۇمۇر قايتا">
+            <button id="registerBtn">تىزىمغا كىرگۈزۈش</button>
+            <div class="auth-switch" id="showLogin">تىزىملىتىش</div>
+            <div class="company-name">ALFDroid Company@</div>
+        </div>
+        
+        <!-- 主标题 -->
+        <h1 id="mainTitle">✨ رەڭدار ماتېماتىكا ✨</h1>
+        
+        <!-- 模式选择 -->
+        <div id="modeSelection" class="mode-selection">
+            <button class="mode-btn" data-mode="addition">
+                <span>➕</span> قوشۇش باغچىسى
+                <div class="mode-description">قوشۇش ئەمەلىيەتلىرى</div>
+            </button>
+            <button class="mode-btn" data-mode="subtraction">
+                <span>➖</span> ئېلىش قەلئەسى
+                <div class="mode-description">ئېلىش ئەمەلىيەتلىرى</div>
+            </button>
+            <button class="mode-btn" data-mode="multiplication">
+                <span>✖️</span> كۆپەيتىش پادىشاھلىقى
+                <div class="mode-description">كۆپەيتىش ئەمەلىيەتلىرى</div>
+            </button>
+            <button class="mode-btn" data-mode="division">
+                <span>➗</span> بۆلۈش دۇنياسى
+                <div class="mode-description">بۆلۈش ئەمەلىيەتلىرى</div>
+            </button>
+            <button class="mode-btn" data-mode="add_sub">
+                <span>➕➖</span> قوشۇش-ئېلىش ئارلاش
+                <div class="mode-description">قوشۇش ۋە ئېلىش ئارلاش</div>
+            </button>
+            <button class="mode-btn" data-mode="mul_div">
+                <span>✖️➗</span> كۆپەيتىش-بۆلۈش ئارلاش
+                <div class="mode-description">كۆپەيتىش ۋە بۆلۈش ئارلاش</div>
+            </button>
+            <button class="mode-btn" data-mode="all">
+                <span>🔀</span> ئارىلاش ھېسابلاش
+                <div class="mode-description">بارلىق ئەمەلىيەتلەر</div>
+            </button>
+            <button class="mode-btn" data-mode="triple">
+                <span>🧮</span> ئۈچ خانلىق ھېسابلاش
+                <div class="mode-description">ئۈچ سان ئارىسىدىكى ئەمەلىيەتلەر</div>
+            </button>
+            <div class="company-name">ALFDroid Company@</div>
+        </div>
+        
+        <!-- 游戏设置 -->
+        <div id="gameSettings" class="game-settings">
+            <div class="setting-group">
+                <div class="setting-label">ئويۇن ھالىتى:</div>
+                <div class="setting-options">
+                    <div class="setting-option selected" data-mode="normal">نورمال</div>
+                    <div class="setting-option" data-mode="timed">ۋاقىت چەكلىك</div>
+                    <div class="setting-option" data-mode="survival">تۇرمۇش ھالىتى</div>
+                </div>
+            </div>
+            <div class="setting-group">
+                <div class="setting-label">سوئال سانى:</div>
+                <div class="setting-options">
+                    <div class="setting-option selected" data-count="10">10</div>
+                    <div class="setting-option" data-count="20">20</div>
+                    <div class="setting-option" data-count="30">30</div>
+                    <div class="setting-option" data-count="50">50</div>
+                </div>
+            </div>
+            <div class="setting-group">
+                <div class="setting-label">ۋاقىت چەكلىمىسى:</div>
+                <div class="setting-options">
+                    <div class="setting-option selected" data-time="15">15 سېكۇنت</div>
+                    <div class="setting-option" data-time="30">30 سېكۇنت</div>
+                    <div class="setting-option" data-time="60">60 سېكۇنت</div>
+                </div>
+            </div>
+            <button id="startGameBtn" class="restart-btn">ئويۇننى باشلاش</button>
+            <button class="restart-btn back-to-main-btn" onclick="showMainMenu()">باشبەتكە قايتىش</button>
+            <div class="company-name">ALFDroid Company@</div>
+        </div>
+        
+        <!-- 级别选择 -->
+        <div id="levelSelection" class="level-selection">
+            <button class="level-btn" data-level="10">
+                <span>🐣</span> 10 ئىچىدە
+            </button>
+            <button class="level-btn" data-level="20">
+                <span>🐥</span> 20 ئىچىدە
+            </button>
+            <button class="level-btn" data-level="50">
+                <span>🦊</span> 50 ئىچىدە
+            </button>
+            <button class="level-btn" data-level="100">
+                <span>🦁</span> 100 ئىچىدە
+            </button>
+            <button class="level-btn" data-level="500">
+                <span>🐉</span> 500 ئىچىدە
+            </button>
+            <button class="restart-btn back-to-main-btn" onclick="showMainMenu()">باشبەتكە قايتىش</button>
+            <div class="company-name">ALFDroid Company@</div>
+        </div>
+        
+        <!-- 游戏容器 -->
+        <div id="quizContainer" class="quiz-container">
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-label">سوئال</div>
+                    <div id="progressStat" class="stat-value">0/10</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">نومۇر</div>
+                    <div id="scoreStat" class="stat-value">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">قالغان ۋاقىت</div>
+                    <div id="timerStat" class="stat-value timer-value">15 سېكۇنت</div>
+                    <div class="time-bar">
+                        <div id="timeProgress" class="time-progress"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="question-container">
+                <div id="question" class="question">3 + 4 = ?</div>
+            </div>
+            
+            <div id="options" class="options">
+                <!-- 选项将通过JavaScript动态生成 -->
+            </div>
+            
+            <div id="feedback" class="feedback"></div>
+            
+            <div class="controls">
+                <button id="backBtn" class="control-btn back-btn">باشبەتكە قايتىش</button>
+                <button id="nextBtn" class="control-btn next-btn">كىيىنكىسى</button>
+            </div>
+            <div class="company-name">ALFDroid Company@</div>
+        </div>
+        
+        <!-- 结果容器 -->
+        <div id="resultContainer" class="result-container">
+            <h2 class="result-title">🎉 مۇسابىقە تاماملاندى! 🎉</h2>
+            <div class="player-name" id="resultPlayerName">ئىشلەتكۇچى</div>
+            
+            <div class="result-box">
+                <div class="result-item">
+                    <span class="result-label">ئومۇمىي سوئال:</span>
+                    <span id="totalQuestions" class="result-value">10</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">توغرا جاۋاب:</span>
+                    <span id="correctAnswers" class="result-value">0</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">توغرا جاۋاب نىسبىتى:</span>
+                    <span id="accuracy" class="result-value">0%</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">ئىشلىتىلگەن ۋاقىت:</span>
+                    <span id="timeUsed" class="result-value">0 سېكۇنت</span>
+                </div>
+                <div class="result-item">
+                    <span class="stat-label">ئەڭ يۇقىرى زەنجىرسىمان جاۋاب:</span>
+                    <span id="maxStreak" class="stat-value">0</span>
+                </div>
+            </div>
+            
+            <div id="resultMessage" class="result-message"></div>
+            
+            <div class="share-buttons">
+                <div class="share-btn facebook" id="shareFacebook">
+                    <i class="fab fa-facebook-f"></i>
+                </div>
+                <div class="share-btn twitter" id="shareTwitter">
+                    <i class="fab fa-twitter"></i>
+                </div>
+                <div class="share-btn whatsapp" id="shareWhatsapp">
+                    <i class="fab fa-whatsapp"></i>
+                </div>
+            </div>
+            
+            <button id="restartBtn" class="restart-btn">قايتا باشلاش</button>
+            <button id="viewWrongAnswersBtn" class="restart-btn">خاتالىقلارنى كۆرۈش</button>
+            <button class="restart-btn back-to-main-btn" onclick="showMainMenu()">باشبەتكە قايتىش</button>
+            <div class="company-name">ALFDroid Company@</div>
+        </div>
+        
+        <!-- 用户资料 -->
+        <div id="profileContainer" class="profile-container">
+            <h2 class="result-title">شەخسىي مەلۇماتلار</h2>
+            <div class="profile-avatar" id="profileAvatar">?</div>
+            <div class="profile-name" id="profileName">ئىشلەتكۇچى</div>
+            
+            <div class="profile-stats">
+                <div class="profile-stat-item">
+                    <span class="profile-stat-label">ئوينالغان ئويۇن:</span>
+                    <span class="profile-stat-value" id="gamesPlayed">0</span>
+                </div>
+                <div class="profile-stat-item">
+                    <span class="profile-stat-label">ئەڭ يۇقىرى نومۇر:</span>
+                    <span class="profile-stat-value" id="highScore">0</span>
+                </div>
+                <div class="profile-stat-item">
+                    <span class="profile-stat-label">ئوتتۇرىچە نومۇر:</span>
+                    <span class="profile-stat-value" id="avgScore">0</span>
+                </div>
+                <div class="profile-stat-item">
+                    <span class="profile-stat-label">ئەڭ يۇقىرى توغرا جاۋاب نىسبىتى:</span>
+                    <span class="profile-stat-value" id="bestAccuracy">0%</span>
+                </div>
+                <div class="profile-stat-item">
+                    <span class="profile-stat-label">ئېرىشكەن نەتىجە:</span>
+                    <span class="profile-stat-value" id="achievementsCount">0/20</span>
+                </div>
+            </div>
+            
+            <button id="backToMenuBtn" class="restart-btn">باشبەتكە قايتىش</button>
+            <div class="company-name">ALFDroid Company@</div>
+        </div>
+        
+        <!-- 错题本 -->
+        <div id="wrongAnswersContainer" class="wrong-answers-container">
+            <h3>خاتالىق يادلىقى</h3>
+            <!-- 错题将通过JavaScript动态生成 -->
+            <button class="restart-btn back-to-main-btn" onclick="showMainMenu()">باشبەتكە قايتىش</button>
+            <div class="company-name">ALFDroid Company@</div>
+        </div>
+        
+        <!-- 排行榜 -->
+        <div id="leaderboardContainer" class="leaderboard-container">
+            <h3>رەتلىك جەدىۋىلى</h3>
+            <div class="leaderboard-header">
+                <span>ئورنى</span>
+                <span>ئىسىم</span>
+                <span>نومۇر</span>
+            </div>
+            <!-- 排行榜数据将通过JavaScript动态生成 -->
+            <button class="restart-btn back-to-main-btn" onclick="showMainMenu()">باشبەتكە قايتىش</button>
+            <div class="company-name">ALFDroid Company@</div>
+        </div>
+        
+        <!-- 成就系统 -->
+        <div id="achievementsContainer" class="achievements-container">
+            <h3>ئېرىشكەن نەتىجىلەر</h3>
+            <!-- 成就将通过JavaScript动态生成 -->
+            <button class="restart-btn back-to-main-btn" onclick="showMainMenu()">باشبەتكە قايتىش</button>
+            <div class="company-name">ALFDroid Company@</div>
+        </div>
+    </div>
+
+    <!-- Audio elements for sound effects -->
+    <audio id="rightSound" src="voice/right.mp3" preload="auto"></audio>
+    <audio id="wrongSound" src="voice/wrong.mp3" preload="auto"></audio>
+    <audio id="goodSound" src="voice/good.mp3" preload="auto"></audio>
+    <audio id="badSound" src="voice/bad.mp3" preload="auto"></audio>
+    <audio id="streakSound" src="voice/streak.mp3" preload="auto"></audio>
+    <audio id="achievementSound" src="voice/achievement.mp3" preload="auto"></audio>
+    <audio id="levelUpSound" src="voice/levelup.mp3" preload="auto"></audio>
+
+    <script>
+        // 游戏状态
+        const gameState = {
+            mode: null,
+            level: null,
+            gameMode: 'normal', // normal, timed, survival
+            questionCount: 10,
+            timePerQuestion: 15,
+            currentQuestion: 0,
+            score: 0,
+            questions: [],
+            userAnswers: [],
+            wrongAnswers: [],
+            startTime: null,
+            elapsedTime: 0,
+            timerInterval: null,
+            timeLeft: 15,
+            streak: 0,
+            maxStreak: 0,
+            timeUp: false,
+            isLoggedIn: false,
+            currentUser: null,
+            users: JSON.parse(localStorage.getItem('mathGameUsers')) || [],
+            records: JSON.parse(localStorage.getItem('mathGameRecords')) || [],
+            achievements: JSON.parse(localStorage.getItem('mathGameAchievements')) || [
+                { id: 'first_game', title: 'تۇنجى ئويۇن', description: 'تۇنجى قېتىم ئويناش', earned: false },
+                { id: 'perfect_score', title: 'مۇكەممەل نومۇر', description: '10/10 توغرا جاۋاب', earned: false },
+                { id: 'streak_5', title: '5 زەنجىر', description: '5 توغرا جاۋاب زەنجىرى', earned: false },
+                { id: 'streak_10', title: '10 زەنجىر', description: '10 توغرا جاۋاب زەنجىرى', earned: false },
+                { id: 'fast_answers', title: 'تېز جاۋاب', description: '5 سوئالغا 5 سېكۇنت ئىچىدە جاۋاب بېرىش', earned: false },
+                { id: 'all_modes', title: 'ھەممە ھالىتى', description: 'بارلىق ئويۇن ھالەتلىرىنى تاماملا', earned: false },
+                { id: 'all_levels', title: 'ھەممە دەرىجىلەر', description: 'بارلىق دەرىجىلەرنى تاماملا', earned: false },
+                { id: 'addition_master', title: 'قوشۇش ماھىرى', description: 'قوشۇش باغچىسىنى تاماملا', earned: false },
+                { id: 'subtraction_master', title: 'ئېلىش ماھىرى', description: 'ئېلىش قەلئەسىنى تاماملا', earned: false },
+                { id: 'multiplication_master', title: 'كۆپەيتىش ماھىرى', description: 'كۆپەيتىش پادىشاھلىقىنى تاماملا', earned: false },
+                { id: 'division_master', title: 'بۆلۈش ماھىرى', description: 'بۆلۈش دۇنياسىنى تاماملا', earned: false },
+                { id: 'survivor', title: 'تۇرمۇشچان', description: 'تۇرمۇش ھالىتىدە 20 سوئال جاۋاب بېرىش', earned: false },
+                { id: 'speedster', title: 'تېزلىك ماھىرى', description: 'ۋاقىت چەكلىمىسى ھالىتىدە 30 سوئال جاۋاب بېرىش', earned: false },
+                { id: 'math_genius', title: 'ماتېماتىكا ئەلىمى', description: 'بارلىق ماتېماتىكا تۈرلىرىنى تاماملا', earned: false },
+                { id: 'level_100', title: '100 دەرىجىسى', description: '100 دەرىجىسىدىكى ئويۇننى تاماملا', earned: false },
+                { id: 'level_500', title: '500 دەرىجىسى', description: '500 دەرىجىسىدىكى ئويۇننى تاماملا', earned: false },
+                { id: 'daily_player', title: 'كۈندىلىك ئوينىغۇچى', description: 'ئارقا ئارقا 5 كۈن ئويناش', earned: false },
+                { id: 'persistent', title: 'تاقەتلىك', description: 'ئارقا ئارقا 10 قېتىم ئويناش', earned: false },
+                { id: 'improver', title: 'ياخشىلانغۇچى', description: 'نومۇرىڭىزنى 50% دىن ئاشۇرۇش', earned: false },
+                { id: 'champion', title: 'چېمپىيون', description: 'رەتلىك جەدىۋىلىدە بىرىنچى بولۇش', earned: false }
+            ],
+            dailyStreak: 0,
+            lastPlayedDate: null
+        };
+        
+        // DOM 元素
+        const themeToggle = document.getElementById('themeToggle');
+        const soundToggle = document.getElementById('soundToggle');
+        const userAvatar = document.getElementById('userAvatar');
+        const userMenu = document.getElementById('userMenu');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const loginUsername = document.getElementById('loginUsername');
+        const loginPassword = document.getElementById('loginPassword');
+        const registerUsername = document.getElementById('registerUsername');
+        const registerPassword = document.getElementById('registerPassword');
+        const registerConfirmPassword = document.getElementById('registerConfirmPassword');
+        const loginBtn = document.getElementById('loginBtn');
+        const registerBtn = document.getElementById('registerBtn');
+        const showLogin = document.getElementById('showLogin');
+        const showRegister = document.getElementById('showRegister');
+        const profileBtn = document.getElementById('profileBtn');
+        const wrongAnswersBtn = document.getElementById('wrongAnswersBtn');
+        const leaderboardBtn = document.getElementById('leaderboardBtn');
+        const achievementsBtn = document.getElementById('achievementsBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const modeSelection = document.getElementById('modeSelection');
+        const levelSelection = document.getElementById('levelSelection');
+        const gameSettings = document.getElementById('gameSettings');
+        const startGameBtn = document.getElementById('startGameBtn');
+        const quizContainer = document.getElementById('quizContainer');
+        const resultContainer = document.getElementById('resultContainer');
+        const questionElement = document.getElementById('question');
+        const optionsElement = document.getElementById('options');
+        const feedbackElement = document.getElementById('feedback');
+        const progressStat = document.getElementById('progressStat');
+        const scoreStat = document.getElementById('scoreStat');
+        const timerStat = document.getElementById('timerStat');
+        const timeProgress = document.getElementById('timeProgress');
+        const totalQuestions = document.getElementById('totalQuestions');
+        const correctAnswers = document.getElementById('correctAnswers');
+        const accuracy = document.getElementById('accuracy');
+        const timeUsed = document.getElementById('timeUsed');
+        const maxStreak = document.getElementById('maxStreak');
+        const resultMessage = document.getElementById('resultMessage');
+        const resultPlayerName = document.getElementById('resultPlayerName');
+        const nextBtn = document.getElementById('nextBtn');
+        const backBtn = document.getElementById('backBtn');
+        const restartBtn = document.getElementById('restartBtn');
+        const viewWrongAnswersBtn = document.getElementById('viewWrongAnswersBtn');
+        const shareFacebook = document.getElementById('shareFacebook');
+        const shareTwitter = document.getElementById('shareTwitter');
+        const shareWhatsapp = document.getElementById('shareWhatsapp');
+        const profileContainer = document.getElementById('profileContainer');
+        const profileAvatar = document.getElementById('profileAvatar');
+        const profileName = document.getElementById('profileName');
+        const gamesPlayed = document.getElementById('gamesPlayed');
+        const highScore = document.getElementById('highScore');
+        const avgScore = document.getElementById('avgScore');
+        const bestAccuracy = document.getElementById('bestAccuracy');
+        const achievementsCount = document.getElementById('achievementsCount');
+        const backToMenuBtn = document.getElementById('backToMenuBtn');
+        const wrongAnswersContainer = document.getElementById('wrongAnswersContainer');
+        const leaderboardContainer = document.getElementById('leaderboardContainer');
+        const achievementsContainer = document.getElementById('achievementsContainer');
+        const mainTitle = document.getElementById('mainTitle');
+        
+        // 初始化
+        function init() {
+            // 检查本地存储中的用户
+            checkLoggedInUser();
+            
+            // 加载排行榜
+            loadLeaderboard();
+            
+            // 加载成就
+            loadAchievements();
+            
+            // 设置事件监听器
+            setupEventListeners();
+            
+            // 检查每日连击
+            checkDailyStreak();
+            
+            // 显示教程提示
+            showTutorialTip();
+        }
+        
+        // 显示教程提示
+        function showTutorialTip() {
+            const tutorialShown = localStorage.getItem('tutorialShown');
+            if (!tutorialShown && !gameState.isLoggedIn) {
+                const tip = document.createElement('div');
+                tip.className = 'tutorial-tip';
+                tip.textContent = 'باشلاش ئۈچۈن تىزىملىتىڭ ياكى تىزىملىتىش كۇنۇپكىسىنى بېسىڭ';
+                document.body.appendChild(tip);
+                
+                setTimeout(() => {
+                    tip.remove();
+                }, 5000);
+                
+                localStorage.setItem('tutorialShown', 'true');
+            }
+        }
+        
+        // 检查已登录用户
+        function checkLoggedInUser() {
+            const loggedInUser = localStorage.getItem('mathGameCurrentUser');
+            if (loggedInUser) {
+                gameState.currentUser = JSON.parse(loggedInUser);
+                gameState.isLoggedIn = true;
+                updateUserUI();
+                showMainMenu();
+            } else {
+                showAuthForms();
+            }
+        }
+        
+        // 更新用户界面
+        function updateUserUI() {
+            if (gameState.isLoggedIn && gameState.currentUser) {
+                const firstLetter = gameState.currentUser.username.charAt(0).toUpperCase();
+                userAvatar.textContent = firstLetter;
+                profileAvatar.textContent = firstLetter;
+                profileName.textContent = gameState.currentUser.username;
+                resultPlayerName.textContent = gameState.currentUser.username;
+                
+                // 更新用户统计
+                updateUserStats();
+            }
+        }
+        
+        // 更新用户统计
+        function updateUserStats() {
+            if (!gameState.currentUser) return;
+            
+            const user = gameState.users.find(u => u.username === gameState.currentUser.username);
+            if (user) {
+                gamesPlayed.textContent = user.gamesPlayed || 0;
+                highScore.textContent = user.highScore || 0;
+                avgScore.textContent = user.gamesPlayed ? Math.round(user.totalScore / user.gamesPlayed) : 0;
+                bestAccuracy.textContent = user.bestAccuracy ? `${user.bestAccuracy}%` : '0%';
+                
+                // 计算已获得的成就数量
+                const earnedCount = gameState.achievements.filter(a => a.earned).length;
+                achievementsCount.textContent = `${earnedCount}/${gameState.achievements.length}`;
+            }
+        }
+        
+        // 设置事件监听器
+        function setupEventListeners() {
+            // 主题切换
+            themeToggle.addEventListener('click', toggleTheme);
+            
+            // 音效控制
+            soundToggle.addEventListener('click', toggleSound);
+            
+            // 用户菜单
+            userAvatar.addEventListener('click', toggleUserMenu);
+            
+            // 登录/注册
+            loginBtn.addEventListener('click', handleLogin);
+            registerBtn.addEventListener('click', handleRegister);
+            showLogin.addEventListener('click', () => {
+                registerForm.style.display = 'none';
+                loginForm.style.display = 'flex';
+            });
+            showRegister.addEventListener('click', () => {
+                loginForm.style.display = 'none';
+                registerForm.style.display = 'flex';
+            });
+            
+            // 用户菜单项
+            profileBtn.addEventListener('click', showProfile);
+            wrongAnswersBtn.addEventListener('click', showWrongAnswers);
+            leaderboardBtn.addEventListener('click', showLeaderboard);
+            achievementsBtn.addEventListener('click', showAchievements);
+            logoutBtn.addEventListener('click', handleLogout);
+            
+            // 模式选择
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    gameState.mode = btn.dataset.mode;
+                    showLevelSelection();
+                });
+                
+                // 添加鼠标悬停事件
+                btn.addEventListener('mouseenter', showModeDescription);
+                btn.addEventListener('mouseleave', hideModeDescription);
+            });
+            
+            // 级别选择
+            document.querySelectorAll('.level-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    gameState.level = parseInt(btn.dataset.level);
+                    showGameSettings();
+                });
+            });
+            
+            // 游戏设置
+            document.querySelectorAll('.setting-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const group = this.parentElement;
+                    group.querySelectorAll('.setting-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                    
+                    if (group.querySelector('.setting-label').textContent === 'ئويۇن ھالىتى:') {
+                        gameState.gameMode = this.dataset.mode;
+                    } else if (group.querySelector('.setting-label').textContent === 'سوئال سانى:') {
+                        gameState.questionCount = parseInt(this.dataset.count);
+                    } else if (group.querySelector('.setting-label').textContent === 'ۋاقىت چەكلىمىسى:') {
+                        gameState.timePerQuestion = parseInt(this.dataset.time);
+                    }
+                });
+            });
+            
+            startGameBtn.addEventListener('click', startGame);
+            
+            // 游戏控制
+            nextBtn.addEventListener('click', nextQuestion);
+            backBtn.addEventListener('click', () => {
+                if (confirm('باشبەتكە قايتامسىز؟ ھازىرقى بەت چېكىنىپ كېتىدۇ!')) {
+                    resetGame();
+                    showMainMenu();
+                }
+            });
+            
+            // 结果控制
+            restartBtn.addEventListener('click', () => {
+                resultContainer.style.display = 'none';
+                startGame();
+            });
+            
+            viewWrongAnswersBtn.addEventListener('click', showWrongAnswers);
+            
+            // 分享按钮
+            shareFacebook.addEventListener('click', shareToFacebook);
+            shareTwitter.addEventListener('click', shareToTwitter);
+            shareWhatsapp.addEventListener('click', shareToWhatsapp);
+            
+            // 返回菜单
+            backToMenuBtn.addEventListener('click', showMainMenu);
+        }
+        
+        // 切换主题
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const icon = themeToggle.querySelector('i');
+            if (document.body.classList.contains('dark-mode')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        }
+        
+        // 切换音效
+        function toggleSound() {
+            gameState.soundEnabled = !gameState.soundEnabled;
+            const icon = soundToggle.querySelector('i');
+            icon.classList.toggle('fa-volume-up');
+            icon.classList.toggle('fa-volume-mute');
+            
+            // 存储用户偏好
+            localStorage.setItem('mathGameSoundEnabled', gameState.soundEnabled);
+        }
+        
+        // 播放音效
+        function playSound(id) {
+            if (gameState.soundEnabled) {
+                const sound = document.getElementById(id);
+                sound.currentTime = 0;
+                sound.play().catch(e => console.log('音效播放失败:', e));
+            }
+        }
+        
+        // 显示模式描述
+        function showModeDescription(e) {
+            const descriptions = {
+                'addition': 'قوشۇش ئەمەلىيەتلىرى',
+                'subtraction': 'ئېلىش ئەمەلىيەتلىرى',
+                'multiplication': 'كۆپەيتىش ئەمەلىيەتلىرى',
+                'division': 'بۆلۈش ئەمەلىيەتلىرى',
+                'add_sub': 'قوشۇش ۋە ئېلىش ئارلاش',
+                'mul_div': 'كۆپەيتىش ۋە بۆلۈش ئارلاش',
+                'all': 'بارلىق ئەمەلىيەتلەر',
+                'triple': 'ئۈچ سان ئارىسىدىكى ئەمەلىيەتلەر'
+            };
+            
+            const btn = e.currentTarget;
+            const mode = btn.dataset.mode;
+            const desc = btn.querySelector('.mode-description');
+            
+            if (desc) {
+                desc.textContent = descriptions[mode] || '';
+            }
+        }
+        
+        function hideModeDescription(e) {
+            // 这里不需要做任何事情，因为描述已经显示在按钮上了
+        }
+        
+        // 切换用户菜单
+        function toggleUserMenu() {
+            userMenu.classList.toggle('active');
+        }
+        
+        // 处理登录
+        function handleLogin() {
+            const username = loginUsername.value.trim();
+            const password = loginPassword.value.trim();
+            
+            if (!username || !password) {
+                alert('ئىشلەتكۇچى نامى ۋە مەخپى نۇمۇرنى كىرگۈزۈڭ!');
+                return;
+            }
+            
+            const user = gameState.users.find(u => u.username === username && u.password === password);
+            if (user) {
+                gameState.currentUser = user;
+                gameState.isLoggedIn = true;
+                localStorage.setItem('mathGameCurrentUser', JSON.stringify(user));
+                updateUserUI();
+                showMainMenu();
+            } else {
+                alert('ئىشلەتكۇچى نامى ياكى مەخپى نۇمۇر خاتا!');
+            }
+        }
+        
+        // 处理注册
+        function handleRegister() {
+            const username = registerUsername.value.trim();
+            const password = registerPassword.value.trim();
+            const confirmPassword = registerConfirmPassword.value.trim();
+            
+            if (!username || !password || !confirmPassword) {
+                alert('بارلىق جەدۋەللەرنى تولدۇرۇڭ!');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                alert('مەخپى نۇمۇرلار ماس كەلمەيدۇ!');
+                return;
+            }
+            
+            if (gameState.users.some(u => u.username === username)) {
+                alert('بۇ ئىشلەتكۇچى نامى ئاللىبۇرۇن مەۋجۇت!');
+                return;
+            }
+            
+            const newUser = {
+                username,
+                password,
+                gamesPlayed: 0,
+                totalScore: 0,
+                highScore: 0,
+                bestAccuracy: 0,
+                wrongAnswers: [],
+                lastPlayed: null,
+                dailyStreak: 0
+            };
+            
+            gameState.users.push(newUser);
+            localStorage.setItem('mathGameUsers', JSON.stringify(gameState.users));
+            
+            gameState.currentUser = newUser;
+            gameState.isLoggedIn = true;
+            localStorage.setItem('mathGameCurrentUser', JSON.stringify(newUser));
+            
+            updateUserUI();
+            showMainMenu();
+        }
+        
+        // 处理注销
+        function handleLogout() {
+            gameState.currentUser = null;
+            gameState.isLoggedIn = false;
+            localStorage.removeItem('mathGameCurrentUser');
+            userMenu.classList.remove('active');
+            showAuthForms();
+        }
+        
+        // 显示认证表单
+        function showAuthForms() {
+            hideAllSections();
+            loginForm.style.display = 'flex';
+            registerForm.style.display = 'none';
+            mainTitle.style.display = 'block';
+        }
+        
+        // 显示主菜单
+        function showMainMenu() {
+            hideAllSections();
+            modeSelection.style.display = 'grid';
+            mainTitle.style.display = 'block';
+            userMenu.classList.remove('active');
+        }
+        
+        // 显示级别选择
+        function showLevelSelection() {
+            hideAllSections();
+            levelSelection.style.display = 'grid';
+        }
+        
+        // 显示游戏设置
+        function showGameSettings() {
+            hideAllSections();
+            gameSettings.style.display = 'flex';
+        }
+        
+        // 显示用户资料
+        function showProfile() {
+            hideAllSections();
+            profileContainer.style.display = 'flex';
+            userMenu.classList.remove('active');
+            updateUserStats();
+        }
+        
+        // 显示错题本
+        function showWrongAnswers() {
+            hideAllSections();
+            wrongAnswersContainer.style.display = 'flex';
+            userMenu.classList.remove('active');
+            
+            // 清空容器
+            wrongAnswersContainer.innerHTML = '<h3>خاتالىق يادلىقى</h3>';
+            
+            // 添加错题
+            if (gameState.currentUser && gameState.currentUser.wrongAnswers && gameState.currentUser.wrongAnswers.length > 0) {
+                gameState.currentUser.wrongAnswers.forEach((wrong, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'wrong-answer-item';
+                    item.innerHTML = `
+                        <div class="wrong-question">${wrong.question}</div>
+                        <div class="wrong-user-answer">جاۋابىڭىز: ${wrong.userAnswer}</div>
+                        <div class="wrong-correct-answer">توغرا جاۋاب: ${wrong.correctAnswer}</div>
+                    `;
+                    wrongAnswersContainer.appendChild(item);
+                });
+            } else {
+                const noWrongs = document.createElement('div');
+                noWrongs.className = 'wrong-answer-item';
+                noWrongs.textContent = 'خاتالىق يوق!';
+                wrongAnswersContainer.appendChild(noWrongs);
+            }
+            
+            // 添加返回按钮
+            const backBtn = document.createElement('button');
+            backBtn.className = 'restart-btn back-to-main-btn';
+            backBtn.textContent = 'باشبەتكە قايتىش';
+            backBtn.addEventListener('click', showMainMenu);
+            wrongAnswersContainer.appendChild(backBtn);
+            wrongAnswersContainer.appendChild(document.createElement('div')).className = 'company-name';
+            wrongAnswersContainer.querySelector('.company-name').textContent = 'ALFDroid Company@';
+        }
+        
+        // 显示排行榜
+        function showLeaderboard() {
+            hideAllSections();
+            leaderboardContainer.style.display = 'flex';
+            userMenu.classList.remove('active');
+            
+            // 清空容器
+            leaderboardContainer.innerHTML = '<h3>رەتلىك جەدىۋىلى</h3>';
+            
+            // 添加标题
+            const header = document.createElement('div');
+            header.className = 'leaderboard-header';
+            header.innerHTML = `
+                <span>ئورنى</span>
+                <span>ئىسىم</span>
+                <span>نومۇر</span>
+            `;
+            leaderboardContainer.appendChild(header);
+            
+            // 添加排行榜项
+            gameState.records.sort((a, b) => b.score - a.score);
+            gameState.records.slice(0, 10).forEach((record, index) => {
+                const item = document.createElement('div');
+                item.className = 'leaderboard-item';
+                item.innerHTML = `
+                    <span class="leaderboard-position">${index + 1}</span>
+                    <span class="leaderboard-name">${record.username}</span>
+                    <span class="leaderboard-score">${record.score}</span>
+                `;
+                leaderboardContainer.appendChild(item);
+            });
+            
+            // 添加返回按钮
+            const backBtn = document.createElement('button');
+            backBtn.className = 'restart-btn back-to-main-btn';
+            backBtn.textContent = 'باشبەتكە قايتىش';
+            backBtn.addEventListener('click', showMainMenu);
+            leaderboardContainer.appendChild(backBtn);
+            leaderboardContainer.appendChild(document.createElement('div')).className = 'company-name';
+            leaderboardContainer.querySelector('.company-name').textContent = 'ALFDroid Company@';
+        }
+        
+        // 加载排行榜
+        function loadLeaderboard() {
+            if (gameState.records.length === 0) {
+                // 添加一些示例记录
+                gameState.records = [
+                    { username: 'ئەلى', score: 95 },
+                    { username: 'ئەخمەت', score: 90 },
+                    { username: 'زەينەپ', score: 85 },
+                    { username: 'مەرىم', score: 80 },
+                    { username: 'ئىبراھىم', score: 75 }
+                ];
+                localStorage.setItem('mathGameRecords', JSON.stringify(gameState.records));
+            }
+        }
+        
+        // 显示成就
+        function showAchievements() {
+            hideAllSections();
+            achievementsContainer.style.display = 'flex';
+            userMenu.classList.remove('active');
+            
+            // 清空容器
+            achievementsContainer.innerHTML = '<h3>ئېرىشكەن نەتىجىلەر</h3>';
+            
+            // 添加成就项
+            gameState.achievements.forEach(achievement => {
+                const item = document.createElement('div');
+                item.className = `achievement-item ${achievement.earned ? '' : 'achievement-locked'}`;
+                item.innerHTML = `
+                    <div class="achievement-icon">
+                        ${achievement.earned ? '🏆' : '🔒'}
+                    </div>
+                    <div class="achievement-info">
+                        <div class="achievement-title">${achievement.title}</div>
+                        <div class="achievement-desc">${achievement.description}</div>
+                    </div>
+                `;
+                achievementsContainer.appendChild(item);
+            });
+            
+            // 添加返回按钮
+            const backBtn = document.createElement('button');
+            backBtn.className = 'restart-btn back-to-main-btn';
+            backBtn.textContent = 'باشبەتكە قايتىش';
+            backBtn.addEventListener('click', showMainMenu);
+            achievementsContainer.appendChild(backBtn);
+            achievementsContainer.appendChild(document.createElement('div')).className = 'company-name';
+            achievementsContainer.querySelector('.company-name').textContent = 'ALFDroid Company@';
+        }
+        
+        // 加载成就
+        function loadAchievements() {
+            const savedAchievements = JSON.parse(localStorage.getItem('mathGameAchievements'));
+            if (savedAchievements) {
+                gameState.achievements = savedAchievements;
+            }
+        }
+        
+        // 检查每日连击
+        function checkDailyStreak() {
+            const today = new Date().toDateString();
+            if (gameState.currentUser) {
+                const user = gameState.users.find(u => u.username === gameState.currentUser.username);
+                if (user) {
+                    if (user.lastPlayed === today) {
+                        // 今天已经玩过
+                        return;
+                    } else if (user.lastPlayed === getYesterdayDate()) {
+                        // 昨天玩过，增加连击
+                        user.dailyStreak = (user.dailyStreak || 0) + 1;
+                        checkAchievement('daily_player', user.dailyStreak >= 5);
+                    } else {
+                        // 连击中断
+                        user.dailyStreak = 1;
+                    }
+                    user.lastPlayed = today;
+                    localStorage.setItem('mathGameUsers', JSON.stringify(gameState.users));
+                }
+            }
+        }
+        
+        // 获取昨天日期
+        function getYesterdayDate() {
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            return yesterday.toDateString();
+        }
+        
+        // 隐藏所有部分
+        function hideAllSections() {
+            loginForm.style.display = 'none';
+            registerForm.style.display = 'none';
+            modeSelection.style.display = 'none';
+            levelSelection.style.display = 'none';
+            gameSettings.style.display = 'none';
+            quizContainer.style.display = 'none';
+            resultContainer.style.display = 'none';
+            profileContainer.style.display = 'none';
+            wrongAnswersContainer.style.display = 'none';
+            leaderboardContainer.style.display = 'none';
+            achievementsContainer.style.display = 'none';
+            mainTitle.style.display = 'none';
+        }
+        
+        // 开始游戏
+        function startGame() {
+            showLoading();
+            
+            setTimeout(() => {
+                // 从设置中获取游戏参数
+                const gameModeOption = document.querySelector('.setting-option.selected[data-mode]');
+                const questionCountOption = document.querySelector('.setting-option.selected[data-count]');
+                const timePerQuestionOption = document.querySelector('.setting-option.selected[data-time]');
+                
+                if (gameModeOption) gameState.gameMode = gameModeOption.dataset.mode;
+                if (questionCountOption) gameState.questionCount = parseInt(questionCountOption.dataset.count);
+                if (timePerQuestionOption) gameState.timePerQuestion = parseInt(timePerQuestionOption.dataset.time);
+                
+                gameState.currentQuestion = 0;
+                gameState.score = 0;
+                gameState.questions = [];
+                gameState.userAnswers = [];
+                gameState.wrongAnswers = [];
+                gameState.startTime = new Date();
+                gameState.elapsedTime = 0;
+                gameState.streak = 0;
+                gameState.maxStreak = 0;
+                gameState.timeLeft = gameState.timePerQuestion;
+                gameState.timeUp = false;
+                
+                // 清除之前的计时器
+                if (gameState.timerInterval) {
+                    clearInterval(gameState.timerInterval);
+                }
+                
+                // 开始计时
+                gameState.timerInterval = setInterval(updateTimer, 1000);
+                
+                // 生成问题
+                for (let i = 0; i < gameState.questionCount; i++) {
+                    gameState.questions.push(generateQuestion());
+                }
+                
+                hideAllSections();
+                quizContainer.style.display = 'flex';
+                
+                startQuestionTimer();
+                showQuestion();
+                
+                hideLoading();
+            }, 500);
+        }
+        
+        // 显示加载动画
+        function showLoading() {
+            const loader = document.createElement('div');
+            loader.className = 'loading-overlay';
+            loader.innerHTML = '<div class="loader"></div>';
+            document.body.appendChild(loader);
+        }
+        
+        // 隐藏加载动画
+        function hideLoading() {
+            const loader = document.querySelector('.loading-overlay');
+            if (loader) loader.remove();
+        }
+        
+        // 更新总计时器
+        function updateTimer() {
+            gameState.elapsedTime = Math.floor((new Date() - gameState.startTime) / 1000);
+        }
+        
+        // 开始题目计时器
+        function startQuestionTimer() {
+            gameState.timeLeft = gameState.timePerQuestion;
+            updateQuestionTimer();
+            
+            if (gameState.questionTimer) {
+                clearInterval(gameState.questionTimer);
+            }
+            
+            gameState.questionTimer = setInterval(() => {
+                gameState.timeLeft--;
+                updateQuestionTimer();
+                
+                if (gameState.timeLeft <= 0) {
+                    clearInterval(gameState.questionTimer);
+                    timeUp();
+                }
+            }, 1000);
+        }
+        
+        // 更新题目计时器显示
+        function updateQuestionTimer() {
+            timerStat.textContent = `${gameState.timeLeft} سېكۇنت`;
+            timeProgress.style.width = `${(gameState.timeLeft / gameState.timePerQuestion) * 100}%`;
+            
+            // 根据剩余时间改变样式
+            timerStat.className = 'stat-value timer-value';
+            timeProgress.className = 'time-progress';
+            
+            if (gameState.timeLeft <= 5) {
+                timerStat.classList.add('critical');
+                timeProgress.classList.add('critical');
+            } else if (gameState.timeLeft <= gameState.timePerQuestion / 2) {
+                timerStat.classList.add('warning');
+                timeProgress.classList.add('warning');
+            }
+        }
+        
+        // 时间到
+        function timeUp() {
+            gameState.timeUp = true;
+            feedbackElement.textContent = 'ۋاقىت توشتى!';
+            feedbackElement.className = 'feedback incorrect';
+            
+            // 播放错误音效
+            playSound('wrongSound');
+            
+            // 禁用所有选项按钮
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.disabled = true;
+            });
+            
+            // 高亮显示正确答案
+            const correctAnswer = gameState.questions[gameState.currentQuestion].answer;
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                if (parseFloat(btn.dataset.value) === correctAnswer) {
+                    btn.classList.add('correct');
+                }
+            });
+            
+            // 记录错误答案
+            const question = gameState.questions[gameState.currentQuestion];
+            gameState.wrongAnswers.push({
+                question: question.text,
+                userAnswer: 'ۋاقىت توشتى',
+                correctAnswer: question.answer
+            });
+            
+            // 生存模式结束
+            if (gameState.gameMode === 'survival') {
+                setTimeout(() => {
+                    showResult();
+                }, 1500);
+                return;
+            }
+            
+            // 显示下一题按钮
+            nextBtn.style.display = 'block';
+        }
+        
+        // 生成问题
+        function generateQuestion() {
+            let num1, num2, num3, operator1, operator2, answer, text;
+            const maxNum = gameState.level;
+            
+            // 三数运算模式
+            if (gameState.mode === 'triple') {
+                const operators = ['+', '-'];
+                operator1 = operators[Math.floor(Math.random() * operators.length)];
+                operator2 = operators[Math.floor(Math.random() * operators.length)];
+                
+                // 确保结果是正整数
+                do {
+                    num1 = Math.floor(Math.random() * (maxNum / 2)) + 1;
+                    num2 = Math.floor(Math.random() * (maxNum / 2)) + 1;
+                    num3 = Math.floor(Math.random() * (maxNum / 2)) + 1;
+                    
+                    if (operator1 === '+') {
+                        if (operator2 === '+') {
+                            answer = num1 + num2 + num3;
+                        } else {
+                            answer = num1 + num2 - num3;
+                        }
+                    } else {
+                        if (operator2 === '+') {
+                            answer = num1 - num2 + num3;
+                        } else {
+                            answer = num1 - num2 - num3;
+                        }
+                    }
+                } while (answer <= 0);
+                
+                text = `${num1} ${operator1} ${num2} ${operator2} ${num3} = ?`;
+            } else {
+                // 其他模式
+                switch(gameState.mode) {
+                    case 'addition':
+                        num1 = Math.floor(Math.random() * (maxNum / 2)) + 1;
+                        num2 = Math.floor(Math.random() * (maxNum / 2)) + 1;
+                        operator1 = '+';
+                        answer = num1 + num2;
+                        break;
+                        
+                    case 'subtraction':
+                        num1 = Math.floor(Math.random() * maxNum) + 1;
+                        num2 = Math.floor(Math.random() * num1) + 1;
+                        operator1 = '-';
+                        answer = num1 - num2;
+                        break;
+                        
+                    case 'multiplication':
+                        num1 = Math.floor(Math.random() * Math.min(10, maxNum / 2)) + 1;
+                        num2 = Math.floor(Math.random() * Math.min(10, maxNum / num1)) + 1;
+                        operator1 = '×';
+                        answer = num1 * num2;
+                        break;
+                        
+                    case 'division':
+                        num2 = Math.floor(Math.random() * Math.min(10, maxNum / 2)) + 1;
+                        answer = Math.floor(Math.random() * Math.min(10, maxNum / num2)) + 1;
+                        num1 = num2 * answer;
+                        operator1 = '÷';
+                        break;
+                        
+                    case 'add_sub':
+                        if (Math.random() < 0.5) {
+                            num1 = Math.floor(Math.random() * (maxNum / 2)) + 1;
+                            num2 = Math.floor(Math.random() * (maxNum / 2)) + 1;
+                            operator1 = '+';
+                            answer = num1 + num2;
+                        } else {
+                            num1 = Math.floor(Math.random() * maxNum) + 1;
+                            num2 = Math.floor(Math.random() * num1) + 1;
+                            operator1 = '-';
+                            answer = num1 - num2;
+                        }
+                        break;
+                        
+                    case 'mul_div':
+                        if (Math.random() < 0.5) {
+                            num1 = Math.floor(Math.random() * Math.min(10, maxNum / 2)) + 1;
+                            num2 = Math.floor(Math.random() * Math.min(10, maxNum / num1)) + 1;
+                            operator1 = '×';
+                            answer = num1 * num2;
+                        } else {
+                            num2 = Math.floor(Math.random() * Math.min(10, maxNum / 2)) + 1;
+                            answer = Math.floor(Math.random() * Math.min(10, maxNum / num2)) + 1;
+                            num1 = num2 * answer;
+                            operator1 = '÷';
+                        }
+                        break;
+                        
+                    case 'all':
+                        const rand = Math.random();
+                        if (rand < 0.25) {
+                            num1 = Math.floor(Math.random() * (maxNum / 2)) + 1;
+                            num2 = Math.floor(Math.random() * (maxNum / 2)) + 1;
+                            operator1 = '+';
+                            answer = num1 + num2;
+                        } else if (rand < 0.5) {
+                            num1 = Math.floor(Math.random() * maxNum) + 1;
+                            num2 = Math.floor(Math.random() * num1) + 1;
+                            operator1 = '-';
+                            answer = num1 - num2;
+                        } else if (rand < 0.75) {
+                            num1 = Math.floor(Math.random() * Math.min(10, maxNum / 2)) + 1;
+                            num2 = Math.floor(Math.random() * Math.min(10, maxNum / num1)) + 1;
+                            operator1 = '×';
+                            answer = num1 * num2;
+                        } else {
+                            num2 = Math.floor(Math.random() * Math.min(10, maxNum / 2)) + 1;
+                            answer = Math.floor(Math.random() * Math.min(10, maxNum / num2)) + 1;
+                            num1 = num2 * answer;
+                            operator1 = '÷';
+                        }
+                        break;
+                }
+                
+                text = `${num1} ${operator1} ${num2} = ?`;
+            }
+            
+            return {
+                num1: num1,
+                num2: num2,
+                num3: num3 || null,
+                operator1: operator1,
+                operator2: operator2 || null,
+                answer: answer,
+                text: text,
+                isFraction: false
+            };
+        }
+        
+        // 显示问题
+        function showQuestion() {
+            const question = gameState.questions[gameState.currentQuestion];
+            questionElement.textContent = question.text;
+            
+            // 生成选项
+            const options = generateOptions(question.answer, question.isFraction);
+            optionsElement.innerHTML = '';
+            
+            options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'option-btn';
+                button.textContent = option;
+                button.dataset.value = option;
+                button.addEventListener('click', selectAnswer);
+                
+                // 添加动画效果
+                button.style.animationDelay = `${index * 0.1}s`;
+                button.classList.add('bounce');
+                
+                optionsElement.appendChild(button);
+            });
+            
+            // 更新统计信息
+            progressStat.textContent = `${gameState.currentQuestion + 1}/${gameState.questionCount}`;
+            scoreStat.textContent = gameState.score;
+            
+            // 重置反馈
+            feedbackElement.textContent = '';
+            feedbackElement.className = 'feedback';
+            
+            // 禁用所有选项按钮（等待用户选择）
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.disabled = false;
+            });
+            
+            // 隐藏下一题按钮
+            nextBtn.style.display = 'none';
+            
+            // 重置时间状态
+            gameState.timeUp = false;
+            
+            // 开始题目计时器
+            startQuestionTimer();
+        }
+        
+        // 生成选项
+        function generateOptions(correctAnswer, isFraction = false) {
+            const options = [correctAnswer];
+            const maxNum = gameState.level * (['multiplication', 'division', 'mul_div', 'all'].includes(gameState.mode) ? 1.5 : 1);
+            
+            while (options.length < 4) {
+                let wrongAnswer;
+                if (['multiplication', 'division', 'mul_div', 'all'].includes(gameState.mode)) {
+                    // 对于乘除法，生成接近正确答案的错误选项
+                    const offset = Math.floor(Math.random() * 5) + 1;
+                    wrongAnswer = Math.max(1, correctAnswer + (Math.random() < 0.5 ? offset : -offset));
+                } else {
+                    // 对于加减法，生成随机错误选项
+                    wrongAnswer = Math.floor(Math.random() * maxNum) + 1;
+                }
+                
+                if (!options.includes(wrongAnswer) && wrongAnswer > 0) {
+                    options.push(wrongAnswer);
+                }
+            }
+            
+            // 打乱选项顺序
+            return options.sort(() => Math.random() - 0.5);
+        }
+        
+        // 选择答案
+        function selectAnswer(e) {
+            // 如果时间已经到了，不再处理答案选择
+            if (gameState.timeUp) return;
+            
+            clearInterval(gameState.questionTimer);
+            
+            const selectedValue = parseFloat(e.target.dataset.value);
+            const correctAnswer = gameState.questions[gameState.currentQuestion].answer;
+            
+            // 禁用所有选项按钮
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.disabled = true;
+                
+                // 高亮显示正确答案
+                if (parseFloat(btn.dataset.value) === correctAnswer) {
+                    btn.classList.add('correct');
+                }
+            });
+            
+            // 记录用户答案
+            gameState.userAnswers[gameState.currentQuestion] = selectedValue;
+            
+            // 检查答案
+            if (Math.abs(selectedValue - correctAnswer) < 0.01) { // 允许微小误差
+                feedbackElement.textContent = getRandomCorrectFeedback();
+                feedbackElement.className = 'feedback correct';
+                gameState.score++;
+                gameState.streak++;
+                
+                // 播放正确音效
+                playSound('rightSound');
+                
+                // 更新连击显示
+                if (gameState.streak > gameState.maxStreak) {
+                    gameState.maxStreak = gameState.streak;
+                    
+                    // 检查连击成就
+                    checkAchievement('streak_5', gameState.streak >= 5);
+                    checkAchievement('streak_10', gameState.streak >= 10);
+                }
+                
+                e.target.classList.add('correct');
+            } else {
+                feedbackElement.textContent = `توغرا جاۋاب ${correctAnswer}`;
+                feedbackElement.className = 'feedback incorrect';
+                
+                // 记录错误答案
+                const question = gameState.questions[gameState.currentQuestion];
+                gameState.wrongAnswers.push({
+                    question: question.text,
+                    userAnswer: selectedValue,
+                    correctAnswer: correctAnswer
+                });
+                
+                gameState.streak = 0;
+                e.target.classList.add('incorrect');
+                
+                // 播放错误音效
+                playSound('wrongSound');
+            }
+            
+            // 更新分数显示
+            scoreStat.textContent = gameState.score;
+            
+            // 显示下一题按钮
+            nextBtn.style.display = 'block';
+            
+            // 1.5秒后自动进入下一题
+            setTimeout(() => {
+                if (gameState.currentQuestion < gameState.questions.length - 1) {
+                    nextQuestion();
+                } else {
+                    showResult();
+                }
+            }, 1500);
+        }
+        
+        // 获取随机正确反馈
+        function getRandomCorrectFeedback() {
+            const feedbacks = [
+                "ئاجايىپ!",
+                "گۈزەل!",
+                "توغرا جاۋاب!",
+                "سىز بەك ئەقىللىق!",
+                "داۋاملاشتۇرۇڭ!",
+                "بەك زېرەككىنسىز!",
+                "قالتىس!",
+                "پۈتۈنلەي توغرا!",
+                "ياخشى ئىش!",
+                "👍 ئېسىل!"
+            ];
+            
+            if (gameState.streak >= 3) {
+                feedbacks.push(`توغرا جاۋاب ${gameState.streak} سوئال!`);
+                feedbacks.push(`${gameState.streak} زەنجىر!`);
+                feedbacks.push("توختىمايدۇ!");
+                
+                // 播放连击音效
+                if (gameState.streak % 3 === 0) {
+                    playSound('streakSound');
+                }
+            }
+            
+            return feedbacks[Math.floor(Math.random() * feedbacks.length)];
+        }
+        
+        // 下一题
+        function nextQuestion() {
+            gameState.currentQuestion++;
+            
+            if (gameState.currentQuestion < gameState.questions.length) {
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }
+        
+        // 显示结果
+        function showResult() {
+            clearInterval(gameState.timerInterval);
+            clearInterval(gameState.questionTimer);
+            createConfetti();
+            
+            hideAllSections();
+            resultContainer.style.display = 'flex';
+            
+            const percentage = Math.round((gameState.score / gameState.questions.length) * 100);
+            
+            // 更新结果统计
+            totalQuestions.textContent = gameState.questions.length;
+            correctAnswers.textContent = gameState.score;
+            accuracy.textContent = `${percentage}%`;
+            timeUsed.textContent = `${gameState.elapsedTime} سېكۇنت`;
+            maxStreak.textContent = gameState.maxStreak;
+            
+            // 根据成绩显示不同评语
+            let message;
+            if (percentage >= 90) {
+                message = "🎖️ ماتېماتىكا ئۇستىسى! سىز بەك قالتىس!";
+                checkAchievement('perfect_score', true);
+            } else if (percentage >= 70) {
+                message = "🏅 ئەلا! داۋاملاشتۇرۇڭ!";
+            } else if (percentage >= 50) {
+                message = "🎯 ياخشى، تېخىمۇ كۆپ تەشەببۇس قىلىڭ!";
+            } else {
+                message = "📚 كۆپ مەشىق قىلىڭ، سىز تېخىمۇ ياخشى نەتىجىگە ئېرىشىسىز!";
+            }
+            
+            // 添加连击信息
+            if (gameState.maxStreak >= 3) {
+                message += ` (ئەڭ يۇقىرى نەتىجە: ${gameState.maxStreak})`;
+            }
+            
+            resultMessage.textContent = message;
+            
+            // 播放结果音效
+            if (percentage >= 60) {
+                playSound('goodSound');
+            } else {
+                playSound('badSound');
+            }
+            
+            // 添加特殊效果
+            if (percentage === 100) {
+                resultContainer.classList.add('heartbeat');
+                setTimeout(() => {
+                    resultContainer.classList.remove('heartbeat');
+                }, 1000);
+            }
+            
+            // 更新用户数据
+            updateUserData(percentage);
+            
+            // 检查成就
+            checkGameAchievements();
+        }
+        
+        // 更新用户数据
+        function updateUserData(accuracy) {
+            if (!gameState.isLoggedIn || !gameState.currentUser) return;
+            
+            const userIndex = gameState.users.findIndex(u => u.username === gameState.currentUser.username);
+            if (userIndex !== -1) {
+                const user = gameState.users[userIndex];
+                
+                // 更新游戏数据
+                user.gamesPlayed = (user.gamesPlayed || 0) + 1;
+                user.totalScore = (user.totalScore || 0) + gameState.score;
+                
+                if (gameState.score > (user.highScore || 0)) {
+                    user.highScore = gameState.score;
+                }
+                
+                if (accuracy > (user.bestAccuracy || 0)) {
+                    user.bestAccuracy = accuracy;
+                }
+                
+                // 添加错误答案
+                if (gameState.wrongAnswers.length > 0) {
+                    user.wrongAnswers = [...(user.wrongAnswers || []), ...gameState.wrongAnswers];
+                    // 限制错题本大小
+                    if (user.wrongAnswers.length > 50) {
+                        user.wrongAnswers = user.wrongAnswers.slice(-50);
+                    }
+                }
+                
+                // 更新最后游玩日期
+                user.lastPlayed = new Date().toDateString();
+                
+                // 保存更新
+                gameState.users[userIndex] = user;
+                gameState.currentUser = user;
+                localStorage.setItem('mathGameUsers', JSON.stringify(gameState.users));
+                localStorage.setItem('mathGameCurrentUser', JSON.stringify(user));
+                
+                // 更新排行榜
+                updateLeaderboard(user.username, gameState.score);
+                
+                // 更新UI
+                updateUserUI();
+            }
+        }
+        
+        // 更新排行榜
+        function updateLeaderboard(username, score) {
+            // 检查用户是否已经在排行榜中
+            const existingRecordIndex = gameState.records.findIndex(r => r.username === username);
+            
+            if (existingRecordIndex !== -1) {
+                // 更新现有记录
+                if (score > gameState.records[existingRecordIndex].score) {
+                    gameState.records[existingRecordIndex].score = score;
+                }
+            } else {
+                // 添加新记录
+                gameState.records.push({ username, score });
+            }
+            
+            // 保存排行榜
+            localStorage.setItem('mathGameRecords', JSON.stringify(gameState.records));
+            
+            // 检查冠军成就
+            gameState.records.sort((a, b) => b.score - a.score);
+            if (gameState.records[0].username === username) {
+                checkAchievement('champion', true);
+            }
+        }
+        
+        // 检查游戏成就
+        function checkGameAchievements() {
+            if (!gameState.isLoggedIn || !gameState.currentUser) return;
+            
+            const user = gameState.users.find(u => u.username === gameState.currentUser.username);
+            if (!user) return;
+            
+            // 检查第一次游戏成就
+            if (user.gamesPlayed === 1) {
+                checkAchievement('first_game', true);
+            }
+            
+            // 检查游戏模式成就
+            if (gameState.gameMode === 'survival' && gameState.score >= 20) {
+                checkAchievement('survivor', true);
+            }
+            
+            if (gameState.gameMode === 'timed') {
+                checkAchievement('speedster', true);
+            }
+            
+            // 检查数学类型成就
+            switch(gameState.mode) {
+                case 'addition':
+                    checkAchievement('addition_master', true);
+                    break;
+                case 'subtraction':
+                    checkAchievement('subtraction_master', true);
+                    break;
+                case 'multiplication':
+                    checkAchievement('multiplication_master', true);
+                    break;
+                case 'division':
+                    checkAchievement('division_master', true);
+                    break;
+            }
+            
+            // 检查等级成就
+            if (gameState.level >= 100) {
+                checkAchievement('level_100', true);
+            }
+            
+            if (gameState.level >= 500) {
+                checkAchievement('level_500', true);
+            }
+            
+            // 检查所有模式成就
+            const modes = ['addition', 'subtraction', 'multiplication', 'division'];
+            const hasPlayedAllModes = modes.every(mode => 
+                gameState.records.some(record => record.mode === mode && record.username === user.username)
+            );
+            
+            if (hasPlayedAllModes) {
+                checkAchievement('math_genius', true);
+            }
+            
+            // 检查所有游戏模式成就
+            const gameModes = ['normal', 'timed', 'survival'];
+            const hasPlayedAllGameModes = gameModes.every(mode => 
+                gameState.records.some(record => record.gameMode === mode && record.username === user.username)
+            );
+            
+            if (hasPlayedAllGameModes) {
+                checkAchievement('all_modes', true);
+            }
+            
+            // 检查所有等级成就
+            const levels = [10, 20, 50, 100, 500];
+            const hasPlayedAllLevels = levels.every(level => 
+                gameState.records.some(record => record.level === level && record.username === user.username)
+            );
+            
+            if (hasPlayedAllLevels) {
+                checkAchievement('all_levels', true);
+            }
+            
+            // 检查持久玩家成就
+            if (user.gamesPlayed >= 10) {
+                checkAchievement('persistent', true);
+            }
+            
+            // 检查进步成就
+            if (user.gamesPlayed >= 5) {
+                const avgScore = user.totalScore / user.gamesPlayed;
+                const recentGames = Math.min(5, user.gamesPlayed);
+                const recentAvg = user.totalScore / recentGames;
+                
+                if (recentAvg >= avgScore * 1.5) {
+                    checkAchievement('improver', true);
+                }
+            }
+        }
+        
+        // 检查成就
+        function checkAchievement(id, condition) {
+            if (!condition) return;
+            
+            const achievement = gameState.achievements.find(a => a.id === id);
+            if (achievement && !achievement.earned) {
+                achievement.earned = true;
+                localStorage.setItem('mathGameAchievements', JSON.stringify(gameState.achievements));
+                
+                // 显示成就通知
+                showAchievementNotification(achievement.title);
+                
+                // 播放成就音效
+                playSound('achievementSound');
+                
+                // 更新UI
+                updateUserUI();
+            }
+        }
+        
+        // 显示成就通知
+        function showAchievementNotification(title) {
+            const notification = document.createElement('div');
+            notification.className = 'feedback correct';
+            notification.style.position = 'fixed';
+            notification.style.top = '20px';
+            notification.style.left = '50%';
+            notification.style.transform = 'translateX(-50%)';
+            notification.style.zIndex = '1000';
+            notification.style.animation = 'fadeIn 0.5s, fadeOut 0.5s 2.5s forwards';
+            notification.textContent = `ئېرىشكەن نەتىجە: ${title}`;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+        
+        // 创建彩色纸屑效果
+        function createConfetti() {
+            const colors = ['#6a5acd', '#9370db', '#87ceeb', '#ff8c00', '#4caf50', '#f44336'];
+            const container = document.querySelector('.container');
+            
+            for (let i = 0; i < 80; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = `${Math.random() * 100}%`;
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                confetti.style.animationDelay = `${Math.random() * 2}s`;
+                container.appendChild(confetti);
+                
+                // 动画结束后移除元素
+                setTimeout(() => {
+                    confetti.remove();
+                }, 5000);
+            }
+        }
+        
+        // 重置游戏
+        function resetGame() {
+            clearInterval(gameState.timerInterval);
+            clearInterval(gameState.questionTimer);
+            quizContainer.style.display = 'none';
+            resultContainer.style.display = 'none';
+        }
+        
+        // 分享到Facebook
+        function shareToFacebook() {
+            const score = gameState.score;
+            const total = gameState.questions.length;
+            const percentage = Math.round((score / total) * 100);
+            const text = `مەن رەڭدار ماتېماتىكا ئويۇنىدا ${score}/${total} (${percentage}%) نومۇرغا ئېرىشتىم! سىزمۇ سىناپ بېقىڭ!`;
+            const url = encodeURIComponent(window.location.href);
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${encodeURIComponent(text)}`, '_blank');
+        }
+        
+        // 分享到Twitter
+        function shareToTwitter() {
+            const score = gameState.score;
+            const total = gameState.questions.length;
+            const percentage = Math.round((score / total) * 100);
+            const text = `مەن رەڭدار ماتېماتىكا ئويۇنىدا ${score}/${total} (${percentage}%) نومۇرغا ئېرىشتىم!`;
+            const url = encodeURIComponent(window.location.href);
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${url}`, '_blank');
+        }
+        
+        // 分享到WhatsApp
+        function shareToWhatsapp() {
+            const score = gameState.score;
+            const total = gameState.questions.length;
+            const percentage = Math.round((score / total) * 100);
+            const text = `مەن رەڭدار ماتېماتىكا ئويۇنىدا ${score}/${total} (${percentage}%) نومۇرغا ئېرىشتىم! سىزمۇ سىناپ بېقىڭ: ${window.location.href}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+        }
+        
+        // 初始化应用
+        document.addEventListener('DOMContentLoaded', () => {
+            // 初始化音效设置
+            gameState.soundEnabled = localStorage.getItem('mathGameSoundEnabled') !== 'false';
+            const icon = soundToggle.querySelector('i');
+            if (!gameState.soundEnabled) {
+                icon.classList.remove('fa-volume-up');
+                icon.classList.add('fa-volume-mute');
+            }
+            
+            init();
+        });
+    </script>
+</body>
+</html>
