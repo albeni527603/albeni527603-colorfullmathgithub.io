@@ -1,2 +1,3 @@
-# albeni527603-ALFDroid.github.io
+# albeni527603-colorfullmathgithub.io
+
 ئۇيغۇرچە ئەپلەر
